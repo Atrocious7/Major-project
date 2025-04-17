@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create an Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{{ url_for("static", filename="images/book.jpg") }}');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            filter: blur(5px);
+        }
+
+        .container {
+            display: flex;
+            background-color: rgba(138, 193, 228, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            height: 800px;
+            width: 800px;
+        }
+
+        .left-panel {
+            background-image: url('{{ url_for("static", filename="images/image3.jpg") }}');
+            background-size: cover;
+            background-position: center;
+            width: 50%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: #fff;
+        }
+
+        .right-panel {
+            width: 60%;
+            padding: 40px;
+        }
+
+        .form-header {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #4b2e00;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #4b2e00;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #c2a070;
+            border-radius: 5px;
+        }
+
+        .form-group input:focus {
+            border-color: #997050;
+            outline: none;
+        }
+
+        .form-check {
+            margin-bottom: 15px;
+        }
+
+        .form-check label {
+            font-size: 14px;
+            color: #000000;
+        }
+
+        .form-check input {
+            margin-right: 10px;
+        }
+
+        .form-buttons {
+            margin-bottom: 20px;
+        }
+
+        .form-buttons button {
+            background-color: #64cafd;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* .form-buttons button:hover {
+            background-color: #7f5b3b;
+        }
+
+        .social-login {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .social-login button {
+            flex: 1;
+            margin: 0 10px;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: none;
+            color: #fff;
+        }
+
+        .social-login .google {
+            background-color: #db4437;
+        } */
+        
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .login-link a {
+            color: #ff3a3a;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="container">
+        <div class="left-panel">
+        </div>
+        <div class="right-panel">
+            <h2 class="form-header">Create an account</h2>
+            <form method="POST" action="{{ url_for('register') }}">
+                <!-- Flask Flash message (optional) -->
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul>
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+                <div class="form-group">
+                    <label for="first-name">First Name</label>
+                    <input type="text" id="first-name" name="first-name" placeholder="First Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Last Name</label>
+                    <input type="text" id="last-name" name="last-name" placeholder="Last Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="example@domain.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <!-- <div class="form-check">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the <a href="#" style="color: #ff3a3a;">Terms & Conditions</a></label>
+                </div> -->
+                <div class="form-buttons">
+                    <button type="submit">Create account</button>
+                </div>
+                <!-- <div class="social-login">
+                    <button class="google">Sign up with Google</button>
+                </div> -->
+
+                <div class="login-link">
+                    Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

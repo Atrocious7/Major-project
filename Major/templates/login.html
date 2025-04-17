@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #7d7d7e, #bbbbbb);
+        }
+
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        .form-control {
+            border-radius: 20px;
+            padding: 10px;
+        }
+
+        .btn-login {
+            background: linear-gradient(to right, #a770ef, #cf8bf3, #fdb99b);
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(to right, #fdb99b, #cf8bf3, #a770ef);
+        }
+
+        .signup-link {
+            margin-top: 10px;
+            color: #4A00E0;
+            text-decoration: none;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+
+        .navbar {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="{{ url_for('home') }}">Home</a>
+    </div>
+
+    <div class="login-container">
+        <h2 class="mb-4">Login</h2>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div id="flash-messages">
+                {% for category, message in messages %}
+                    {% if message.strip() %}  <!-- Ensures no empty flash messages are shown -->
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <input type="email" id="email" name="email" class="form-control" placeholder="Email address" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn btn-outline-dark d-block mx-auto w-75 rounded-5">LOGIN</button>
+        </form>
+        
+        <p class="text-center mt-3">Don't have an account? <a href="{{ url_for('register') }}" class="signup-link">Register here</a></p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".alert").alert();
+            setTimeout(function() {
+                $(".alert").fadeOut();
+            }, 3000); // Auto-hide flash messages after 3 seconds
+        });
+    </script>
+</body>
+
+</html>

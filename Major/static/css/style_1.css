@@ -1,0 +1,27 @@
+.navbar {
+    background-color: rgb(52, 58, 64) !important;
+}
+.navbar-brand, .nav-link {
+    color: white !important;
+}
+.c1{
+    color: white;
+    background-color: #343a40;
+    padding: 10px;
+    border-radius: 25px;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.5s;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+.c1:hover{
+    color: #343a40;
+    background-color: white;
+    cursor: pointer;
+    transition: color 0.5s, background-color 0.5s;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(1, 0.2, 0.2, 0.2);
+}

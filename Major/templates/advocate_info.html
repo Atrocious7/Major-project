@@ -1,0 +1,164 @@
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advocate List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Advocates</h2>
+
+        <!-- Inbox Button -->
+         <div class="row">
+            <div class="col-md-2">
+<button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#inboxModal">
+    📩 Inbox
+</button>
+</div>  
+<div class="col-md-2">
+<!-- <div class="login">
+    <button><a href="{{ url_for('advocate_login')}}" class="btn btn-outline-dark">Login</a></button>
+    </div> -->
+</div>
+    </div>
+
+        <div class="d-flex justify-content-end">
+        </div>
+        <div class="row mt-3">
+            {% for advocate in advocates %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="{% if advocate.Gender == 'Female' %}{{ url_for('static', filename='images/female.jpg') }}{% else %}{{ url_for('static', filename='images/male.webp') }}{% endif %}" 
+                        class="card-img-top" alt="Profile Image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ advocate.Advocate_Name }}</h5>
+                        <p class="card-text"><strong>Experience:</strong> {{ advocate.Experience }}</p>
+                        <p class="card-text"><strong>Work Place:</strong> {{ advocate.City }}</p>
+                        <p class="card-text"><strong>Specialization:</strong> {{ advocate.Specialized }}</p>
+                        <button class="btn btn-dark request-btn" data-bs-toggle="modal" data-bs-target="#requestModal" 
+                                data-name="{{ advocate.Advocate_Name }}">Request</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Request Modal -->
+    <div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="requestModalLabel">Request Consultation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/send_request">
+                        <div class="mb-3">
+                            <label for="lawyerName" class="form-label">Lawyer Name</label>
+                            <input type="text" class="form-control" id="lawyerName" name="lawyerName" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="userName" name="userName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="caseDetails" class="form-label">Case Details</label>
+                            <textarea class="form-control" id="caseDetails" name="caseDetails" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitRequest">Submit Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+<!-- Inbox Modal -->
+<div class="modal fade" id="inboxModal" tabindex="-1" aria-labelledby="inboxModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inboxModalLabel">Inbox</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul id="inboxMessages" class="list-group">
+                    <!-- Messages will be inserted here dynamically -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Request Submitted</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Your request has been successfully submitted. The advocate will contact you soon.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- <button><a href="{{ url_for('advocate_login')}}">Login</a></button> -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Handle the "Request" button click
+        document.querySelectorAll(".request-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let lawyerName = this.getAttribute("data-name"); // Get advocate name
+                document.getElementById("lawyerName").value = lawyerName; // Set in modal
+            });
+        });
+
+        // Fetch inbox messages when the inbox modal is shown
+        document.getElementById("inboxModal").addEventListener("show.bs.modal", function () {
+            fetch('/get_inbox_messages')
+                .then(response => response.json())
+                .then(data => {
+                    let inboxList = document.getElementById("inboxMessages");
+                    inboxList.innerHTML = ""; // Clear previous messages
+
+                    if (data.length === 0) {
+                        inboxList.innerHTML = "<li class='list-group-item'>No messages yet.</li>";
+                    } else {
+                        data.forEach(msg => {
+                            inboxList.innerHTML += `
+                                <li class="list-group-item">
+                                    <strong>Case:</strong> ${msg.case_details} <br>
+                                    <strong>Advocate Response:</strong> ${msg.response}<br>
+                                    <strong>Advocate Name:</strong> ${msg.advocate_name}<br>
+                                </li>
+                            `;
+                        });
+                    }
+                })
+                .catch(error => console.error("Error fetching inbox messages:", error));
+        });
+    });
+
+    document.getElementById("submitRequest").addEventListener("click", function () {
+        alert("Your request has been submitted successfully!");
+    });
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

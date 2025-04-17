@@ -1,0 +1,86 @@
+body {
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+.navbar {
+    background-color: #343a40 !important;
+}
+.navbar-brand, .nav-link {
+    color: white !important;
+}
+.card {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+.footer {
+    background-color: #343a40;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+.card:hover{
+background-color: #f8f9fa;
+color: #343a40;
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0% { color: #343a40; }
+    50% { color: white; }
+    100% { color: #343a40; }
+}
+#lawimage {
+    margin-top: 20px;
+    width: 60%;
+    height: 60%;
+    transition: transform 0.5s;
+    border-radius: 25px;
+}
+#lawimage:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(1, 0.2, 0.2, 0.2);
+}
+
+.lis{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.aibox{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 25px;
+    background-color: #f8f9fa;
+    box-shadow: 0 0 10px rgba(1, 0.2, 0.2, 0.2);
+    transition: transform 0.5s;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+.aibox:hover{
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(1, 0.2, 0.2, 0.2);
+}
+.aibox::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #343a40;
+    opacity: 0;
+    transition: opacity 0.5s;
+}

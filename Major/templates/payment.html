@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#6B7280'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-3xl mx-auto p-6 mt-10">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-semibold text-gray-900">Payment Details</h1>
+                <div class="flex items-center space-x-2">
+                    <div class="w-6 h-6 flex items-center justify-center">
+                        <i class="ri-shield-check-line text-green-500"></i>
+                    </div>
+                    <span class="text-sm text-gray-600">Secure Payment</span>
+                </div>
+            </div>
+            <div class="mb-8">
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    <div>
+                        <p class="text-sm text-gray-600">Order Total</p>
+                        <p class="text-2xl font-bold text-gray-900">Rs 1699</p>
+                    </div>
+                    <button id="orderDetails" class="text-primary hover:text-primary/80 text-sm cursor-pointer whitespace-nowrap">
+                        View Order Details
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="flex space-x-4 mb-6">
+                    <button class="payment-method-btn active flex-1 py-4 px-6 rounded-button border-2 border-primary bg-primary/5 text-primary cursor-pointer" data-method="card">
+                        <div class="flex items-center justify-center space-x-2">
+                            <div class="w-6 h-6 flex items-center justify-center">
+                                <i class="ri-bank-card-line"></i>
+                            </div>
+                            <span>Credit Card</span>
+                        </div>
+                    </button>
+                    <button class="payment-method-btn flex-1 py-4 px-6 rounded-button border-2 border-gray-200 hover:border-primary/50 cursor-pointer" data-method="paypal">
+                        <div class="flex items-center justify-center space-x-2">
+                            <div class="w-6 h-6 flex items-center justify-center">
+                                <i class="ri-paypal-fill text-[#003087]"></i>
+                            </div>
+                            <span>PayPal</span>
+                        </div>
+                    </button>
+                    <button class="payment-method-btn flex-1 py-4 px-6 rounded-button border-2 border-gray-200 hover:border-primary/50 cursor-pointer" data-method="other">
+                        <div class="flex items-center justify-center space-x-2">
+                            <div class="w-6 h-6 flex items-center justify-center">
+                                <i class="ri-more-2-fill"></i>
+                            </div>
+                            <span>Other</span>
+                        </div>
+                    </button>
+                </div>
+
+                <div id="cardPayment" class="payment-section">
+                    <form id="cardForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Card Number</label>
+                            <div class="relative">
+                                <input type="text" id="cardNumber" class="w-full px-4 py-3 border border-gray-200 rounded focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="1234 5678 9012 3456" maxlength="19">
+                                <div class="absolute right-4 top-1/2 transform -translate-y-1/2 flex space-x-2">
+                                    <div class="w-6 h-6 flex items-center justify-center">
+                                        <i class="ri-visa-fill text-[#1A1F71]"></i>
+                                    </div>
+                                    <div class="w-6 h-6 flex items-center justify-center">
+                                        <i class="ri-mastercard-fill text-[#EB001B]"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Cardholder Name</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-200 rounded focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="Name on card">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
+                                <input type="text" id="expiryDate" class="w-full px-4 py-3 border border-gray-200 rounded focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <span class="flex items-center">
+                                        CVV
+                                        <div class="w-4 h-4 ml-1 flex items-center justify-center cursor-help" title="3-4 digits on the back of your card">
+                                            <i class="ri-question-line text-gray-400"></i>
+                                        </div>
+                                    </span>
+                                </label>
+                                <input type="text" id="cvv" class="w-full px-4 py-3 border border-gray-200 rounded focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="123" maxlength="4">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="paypalPayment" class="payment-section hidden">
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                            <i class="ri-paypal-fill text-[#003087] text-5xl"></i>
+                        </div>
+                        <p class="text-gray-600 mb-6">You will be redirected to PayPal to complete your payment securely.</p>
+                        <button class="bg-[#003087] text-white py-4 px-8 rounded-button hover:bg-[#003087]/90 cursor-pointer whitespace-nowrap">
+                            Continue with PayPal
+                        </button>
+                    </div>
+                </div>
+                <div id="otherPayment" class="payment-section hidden">
+                    <div class="grid grid-cols-2 gap-4">
+                        <button class="flex items-center justify-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-primary/50 cursor-pointer">
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <i class="ri-google-fill text-[#4285F4]"></i>
+                            </div>
+                            <span>Google Pay</span>
+                        </button>
+                        <button class="flex items-center justify-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-primary/50 cursor-pointer">
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <i class="ri-apple-fill"></i>
+                            </div>
+                            <span>Apple Pay</span>
+                        </button>
+                        <button class="flex items-center justify-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-primary/50 cursor-pointer">
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <i class="ri-alipay-fill text-[#1677FF]"></i>
+                            </div>
+                            <span>Alipay</span>
+                        </button>
+                        <button class="flex items-center justify-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-primary/50 cursor-pointer">
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <i class="ri-bank-fill text-primary"></i>
+                            </div>
+                            <span>Bank Transfer</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t">
+                    <button id="payButton" class="w-full bg-primary text-white py-4 rounded-button hover:bg-primary/90 cursor-pointer whitespace-nowrap">
+                        Pay Rs 1699
+                    </button>
+                    <div class="mt-4 flex items-center justify-center space-x-2 text-sm text-gray-500">
+                        <div class="w-4 h-4 flex items-center justify-center">
+                            <i class="ri-lock-line"></i>
+                        </div>
+                        <span>Payments are secure and encrypted</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center text-green-500">
+                    <i class="ri-checkbox-circle-fill text-5xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Payment Successful!</h3>
+                <p class="text-gray-600 mb-6">Your payment has been processed successfully.</p>
+                <button onclick="closeSuccessModal()" class="bg-primary text-white py-3 px-6 rounded-button hover:bg-primary/90 cursor-pointer whitespace-nowrap">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentMethods = document.querySelectorAll('.payment-method-btn');
+            const paymentSections = document.querySelectorAll('.payment-section');
+            const cardNumberInput = document.getElementById('cardNumber');
+            const expiryDateInput = document.getElementById('expiryDate');
+            const cvvInput = document.getElementById('cvv');
+            const payButton = document.getElementById('payButton');
+            const successModal = document.getElementById('successModal');
+
+            paymentMethods.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    paymentMethods.forEach(b => b.classList.remove('active', 'bg-primary/5', 'border-primary'));
+                    btn.classList.add('active', 'bg-primary/5', 'border-primary');
+                    
+                    const method = btn.dataset.method;
+                    paymentSections.forEach(section => {
+                        section.classList.add('hidden');
+                    });
+                    document.getElementById(`${method}Payment`).classList.remove('hidden');
+                });
+            });
+
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s/g, '');
+                value = value.replace(/\D/g, '');
+                let formattedValue = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                e.target.value = formattedValue;
+            });
+
+            expiryDateInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.slice(0,2) + '/' + value.slice(2);
+                }
+                e.target.value = value;
+            });
+
+            cvvInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            });
+
+            payButton.addEventListener('click', function() {
+                successModal.classList.remove('hidden');
+            });
+        });
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
